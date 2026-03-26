@@ -1,0 +1,14 @@
+{
+  "name": "straydog-blog",
+  "version": "1.0.0",
+  "description": "straydog.blog — monorepo root. Runs client and server concurrently.",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"client,server\" --prefix-colors \"cyan,yellow\" \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+    "install:all": "npm install && npm install --prefix client && npm install --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
+
