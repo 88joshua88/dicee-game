@@ -1,10 +1,12 @@
 {
-  "name": "straydog-blog",
+  "name": "energex",
   "version": "1.0.0",
-  "description": "straydog.blog — monorepo root. Runs client and server concurrently.",
+  "description": "EnergeX — unified global marketplace. Monorepo root.",
   "private": true,
   "scripts": {
     "dev": "concurrently --names \"client,server\" --prefix-colors \"cyan,yellow\" \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
     "install:all": "npm install && npm install --prefix client && npm install --prefix server"
   },
   "devDependencies": {

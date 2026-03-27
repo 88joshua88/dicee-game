@@ -2,21 +2,36 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-// Load environment variables
+// Load environment variables before anything else
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const connectDB = require('./config/db');
+const { initCloudinary } = require('./config/cloudinary');
+const errorHandler = require('./middleware/errorHandler');
 
-// Middleware
+// ── Initialise external services ─────────────────────────────────────────────
+connectDB();
+initCloudinary();
+
+// ── Express app ───────────────────────────────────────────────────────────────
+const app = express();
+
+// Core middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-// Routes
-const healthRoutes = require('./routes/health');
-app.use('/api', healthRoutes);
+// ── Route registration ────────────────────────────────────────────────────────
+app.use('/api', require('./routes/health'));
+app.use('/api', require('./routes/upload'));
+app.use('/api/email', require('./routes/email'));
 
-// Start server
+// ── Centralised error handler (must be last) ──────────────────────────────────
+app.use(errorHandler);
+
+// ── Start server ──────────────────────────────────────────────────────────────
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`straydog server running on http://localhost:${PORT}`);
+  console.log(`EnergeX API running on http://localhost:${PORT}`);
 });
+
