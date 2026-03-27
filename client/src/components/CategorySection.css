@@ -1,0 +1,45 @@
+/* ===========================
+   CategorySection
+   =========================== */
+
+.category-section {
+  margin-bottom: 2.5rem;
+}
+
+.category-section__header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+.category-section__title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-transform: capitalize;
+}
+
+.category-section__count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+}
+
+/* Responsive grid of cards */
+.category-section__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .category-section__grid {
+    grid-template-columns: 1fr;
+  }
+}

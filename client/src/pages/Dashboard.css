@@ -1,0 +1,124 @@
+/* ===========================
+   Dashboard
+   =========================== */
+
+.dashboard {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* Header */
+.dashboard__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.dashboard__greeting {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--color-text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.dashboard__subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.dashboard__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Shared button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.3rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  border: 2px solid transparent;
+  text-decoration: none;
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background: var(--color-accent-hover);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.btn--ghost:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+/* Content */
+.dashboard__content {
+  /* layout handled by CategorySection */
+}
+
+/* State messages */
+.state-msg {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
+
+.state-msg--error {
+  color: #e05c6a;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.empty-state__icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  max-width: 380px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .dashboard__header { flex-direction: column; }
+  .dashboard__actions { width: 100%; }
+  .btn { width: 100%; justify-content: center; }
+}

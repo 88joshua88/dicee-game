@@ -1,0 +1,106 @@
+/* ===========================
+   Marketplace
+   =========================== */
+
+.marketplace {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.marketplace__header {
+  margin-bottom: 1.75rem;
+}
+
+.marketplace__header h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--color-text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.marketplace__header p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+/* Filters */
+.marketplace__filters {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.marketplace__search {
+  flex: 1;
+  min-width: 220px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.marketplace__search:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.marketplace__search::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Type tabs */
+.marketplace__type-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.type-tab {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.type-tab:hover { color: var(--color-text-primary); }
+
+.type-tab.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+/* Count line */
+.marketplace__count {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.25rem;
+}
+
+/* Results grid */
+.marketplace__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+}
+
+/* Reuse .state-msg and .empty-state from Dashboard.css */
+/* (both are defined globally enough via shared page styles) */
+
+@media (max-width: 560px) {
+  .marketplace__filters { flex-direction: column; align-items: stretch; }
+  .marketplace__search  { min-width: unset; }
+  .marketplace__grid    { grid-template-columns: 1fr; }
+}

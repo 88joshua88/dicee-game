@@ -23,6 +23,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // ── Route registration ────────────────────────────────────────────────────────
 app.use('/api', require('./routes/health'));
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/energies', require('./routes/energies'));
 app.use('/api', require('./routes/upload'));
 app.use('/api/email', require('./routes/email'));
 

@@ -1,38 +1,88 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import api from '../services/api';
 
 /**
  * AuthContext — global authentication state for EnergeX.
  *
- * Currently a stub — will be fully implemented in the Auth phase.
- * Placing it here now keeps the import paths stable across the codebase.
- *
- * Provides: { user, token, login, logout }
+ * Persists token and user to localStorage so the session survives
+ * a page refresh. The api.js interceptor reads the token directly
+ * from localStorage on each request.
  */
 const AuthContext = createContext(null);
 
+const TOKEN_KEY = 'energex_token';
+const USER_KEY  = 'energex_user';
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [user,  setUser]  = useState(() => {
+    try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; }
+  });
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState(null);
 
-  // Stub handlers — will call the auth API endpoints in the next phase
-  const login = (userData, authToken) => {
-    setUser(userData);
-    setToken(authToken);
-  };
+  // ── Persist to localStorage whenever state changes ──────────────────────────
+  useEffect(() => {
+    if (token) localStorage.setItem(TOKEN_KEY, token);
+    else        localStorage.removeItem(TOKEN_KEY);
+  }, [token]);
 
-  const logout = () => {
-    setUser(null);
+  useEffect(() => {
+    if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
+    else      localStorage.removeItem(USER_KEY);
+  }, [user]);
+
+  // ── Auth actions ────────────────────────────────────────────────────────────
+  const register = useCallback(async (name, email, password) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await api.post('/auth/register', { name, email, password });
+      setToken(data.token);
+      setUser(data.user);
+      return { success: true };
+    } catch (err) {
+      setError(err.message);
+      return { success: false, message: err.message };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const login = useCallback(async (email, password) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await api.post('/auth/login', { email, password });
+      setToken(data.token);
+      setUser(data.user);
+      return { success: true };
+    } catch (err) {
+      setError(err.message);
+      return { success: false, message: err.message };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const logout = useCallback(() => {
     setToken(null);
-  };
+    setUser(null);
+  }, []);
+
+  const clearError = useCallback(() => setError(null), []);
+
+  const isAuthenticated = Boolean(token && user);
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, loading, error, isAuthenticated, register, login, logout, clearError }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Convenience hook
 export const useAuth = () => useContext(AuthContext);
 
 export default AuthContext;

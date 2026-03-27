@@ -166,6 +166,47 @@ a {
 }
 
 /* ===========================
+   Shared state messages
+   (used by Dashboard, Marketplace, Profile)
+   =========================== */
+
+.state-msg {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
+
+.state-msg--error { color: #e05c6a; }
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.empty-state__icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  max-width: 380px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+
+/* ===========================
    Utility
    =========================== */
 

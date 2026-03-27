@@ -19,10 +19,13 @@ const api = axios.create({
 });
 
 // ── Request interceptor ───────────────────────────────────────────────────────
-// Attach auth token once authentication is built (token will live in context)
+// Attach JWT Bearer token from localStorage on every request
 api.interceptors.request.use(
   (config) => {
-    // TODO (Auth phase): attach Bearer token from context/localStorage
+    const token = localStorage.getItem('energex_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => Promise.reject(error)

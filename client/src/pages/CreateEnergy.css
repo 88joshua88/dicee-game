@@ -1,0 +1,118 @@
+/* ===========================
+   Create Energy Page
+   =========================== */
+
+.create-energy-page {
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.create-energy-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 560px;
+  height: fit-content;
+  box-shadow: var(--shadow-card);
+}
+
+.back-link {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.25rem;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover { color: var(--color-text-primary); }
+
+.create-energy-card h1 {
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.create-energy-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1.75rem;
+  line-height: 1.6;
+}
+
+/* Form */
+.create-energy-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Type selector */
+.type-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.type-btn {
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.type-btn span {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.type-btn--give.active {
+  border-color: #e86a6a;
+  background: rgba(232, 106, 106, 0.06);
+  color: #e86a6a;
+}
+
+.type-btn--receive.active {
+  border-color: #6ab0e8;
+  background: rgba(106, 176, 232, 0.06);
+  color: #6ab0e8;
+}
+
+/* Reuse form-group + auth-error + auth-btn from AuthPages.css */
+.create-energy-form .form-group textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.create-energy-form select {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.65rem 0.9rem;
+  transition: border-color 0.2s ease;
+  width: 100%;
+  cursor: pointer;
+}
+
+.create-energy-form select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}

@@ -1,0 +1,99 @@
+/* ===========================
+   EnergyCard
+   =========================== */
+
+.energy-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.energy-card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+/* Left border tint by type */
+.energy-card--give    { border-left: 3px solid #e86a6a; }
+.energy-card--receive { border-left: 3px solid #6ab0e8; }
+
+/* Type badge */
+.energy-card__type {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  width: fit-content;
+}
+
+.energy-card__type--give {
+  background: rgba(232, 106, 106, 0.12);
+  color: #e86a6a;
+  border: 1px solid rgba(232, 106, 106, 0.25);
+}
+
+.energy-card__type--receive {
+  background: rgba(106, 176, 232, 0.12);
+  color: #6ab0e8;
+  border: 1px solid rgba(106, 176, 232, 0.25);
+}
+
+/* Title */
+.energy-card__title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+/* Description */
+.energy-card__desc {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+  /* clamp to 3 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Footer: category + user */
+.energy-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.energy-card__category {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.energy-card__user {
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.energy-card__user:hover {
+  text-decoration: underline;
+}
