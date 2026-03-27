@@ -89,6 +89,42 @@
   margin-bottom: 1.25rem;
 }
 
+/* Section headers (Articles / Energies) */
+.marketplace__section {
+  margin-bottom: 2.5rem;
+}
+
+.marketplace__section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+.marketplace__section-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.marketplace__section-header span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+}
+
+/* Articles grid */
+.marketplace__articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.1rem;
+}
+
 /* Results grid */
 .marketplace__grid {
   display: grid;

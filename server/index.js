@@ -25,6 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api', require('./routes/health'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/energies', require('./routes/energies'));
+app.use('/api/articles', require('./routes/articles'));
 app.use('/api', require('./routes/upload'));
 app.use('/api/email', require('./routes/email'));
 

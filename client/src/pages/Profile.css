@@ -124,6 +124,11 @@
   gap: 1rem;
 }
 
+.profile__grid--articles {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin-bottom: 1rem;
+}
+
 @media (max-width: 600px) {
   .profile__avatar-wrap  { left: 1rem; }
   .profile__meta         { padding: 0 1rem 1.5rem; }

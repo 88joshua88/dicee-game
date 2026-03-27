@@ -2,24 +2,37 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getEnergiesByUser, groupByCategory } from '../services/energyService';
+import { getArticlesByUser } from '../services/articleService';
 import CategorySection from '../components/CategorySection';
+import ArticleCard from '../components/ArticleCard';
+import CategoryModal from '../components/CategoryModal';
 import './Dashboard.css';
 
 /**
  * Dashboard — main hub after login.
- * Shows the user's own energies grouped by category.
+ *
+ * - "Create Energy" button opens CategoryModal (structured type selection)
+ * - Shows user's Articles section
+ * - Shows user's generic Energies grouped by category
  */
 const Dashboard = () => {
   const { user } = useAuth();
-  const [energies,   setEnergies]   = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState(null);
+
+  const [energies, setEnergies] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [error,    setError]    = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchMyEnergies = async () => {
+    const fetchAll = async () => {
       try {
-        const data = await getEnergiesByUser(user._id);
-        setEnergies(data);
+        const [energyData, articleData] = await Promise.all([
+          getEnergiesByUser(user._id),
+          getArticlesByUser(user._id),
+        ]);
+        setEnergies(energyData);
+        setArticles(articleData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -27,15 +40,16 @@ const Dashboard = () => {
       }
     };
 
-    if (user?._id) fetchMyEnergies();
+    if (user?._id) fetchAll();
   }, [user]);
 
-  const grouped = groupByCategory(energies);
+  const grouped    = groupByCategory(energies);
   const categories = Object.keys(grouped);
+  const isEmpty    = energies.length === 0 && articles.length === 0;
 
   return (
     <div className="dashboard">
-      {/* ── Header ─────────────────────────────────────────────── */}
+      {/* ── Header ──────────────────────────────────────────────── */}
       <div className="dashboard__header">
         <div>
           <h1 className="dashboard__greeting">
@@ -47,35 +61,56 @@ const Dashboard = () => {
         </div>
 
         <div className="dashboard__actions">
-          <Link to="/create-energy" className="btn btn--primary">
+          <button className="btn btn--primary" onClick={() => setModalOpen(true)}>
             + Create Energy
-          </Link>
+          </button>
           <Link to="/marketplace" className="btn btn--ghost">
             Explore Marketplace
           </Link>
         </div>
       </div>
 
-      {/* ── Energy list ────────────────────────────────────────── */}
+      {/* ── Content ─────────────────────────────────────────────── */}
       <div className="dashboard__content">
         {loading && <p className="state-msg">Loading your energies…</p>}
+        {error   && <p className="state-msg state-msg--error">{error}</p>}
 
-        {error && <p className="state-msg state-msg--error">{error}</p>}
-
-        {!loading && !error && energies.length === 0 && (
+        {/* Empty state */}
+        {!loading && !error && isEmpty && (
           <div className="empty-state">
             <p className="empty-state__icon">⚡</p>
             <h2>You haven't created any energy yet</h2>
             <p>
-              Start by creating your first energy — something you want to give
-              or receive from the world.
+              Start by clicking "Create Energy" to select a type and publish
+              your first offering to the world.
             </p>
-            <Link to="/create-energy" className="btn btn--primary">
+            <button className="btn btn--primary" onClick={() => setModalOpen(true)}>
               Create Your First Energy
-            </Link>
+            </button>
           </div>
         )}
 
+        {/* ── Articles section ── */}
+        {!loading && !error && articles.length > 0 && (
+          <section className="dashboard-section">
+            <div className="dashboard-section__header">
+              <h2 className="dashboard-section__title">Your Articles</h2>
+              <span className="dashboard-section__count">{articles.length}</span>
+            </div>
+            <div className="dashboard-articles-grid">
+              {articles.map((article) => (
+                <ArticleCard
+                  key={article._id}
+                  article={article}
+                  showUser={false}
+                  showManage
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── Generic energies grouped by category ── */}
         {!loading && !error && categories.map((cat) => (
           <CategorySection
             key={cat}
@@ -85,6 +120,9 @@ const Dashboard = () => {
           />
         ))}
       </div>
+
+      {/* ── Category selection modal ── */}
+      <CategoryModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 };

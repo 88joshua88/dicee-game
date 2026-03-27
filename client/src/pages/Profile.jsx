@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getEnergiesByUser } from '../services/energyService';
+import { getArticlesByUser } from '../services/articleService';
 import EnergyCard from '../components/EnergyCard';
+import ArticleCard from '../components/ArticleCard';
 import './Profile.css';
 
 /**
@@ -14,20 +16,25 @@ const Profile = () => {
   const { userId } = useParams();
   const { user: currentUser } = useAuth();
 
-  const [energies,   setEnergies]   = useState([]);
+  const [energies,    setEnergies]    = useState([]);
+  const [articles,    setArticles]    = useState([]);
   const [profileUser, setProfileUser] = useState(null);
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState(null);
+  const [loading,     setLoading]     = useState(true);
+  const [error,       setError]       = useState(null);
 
   const isOwnProfile = currentUser?._id === userId;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getEnergiesByUser(userId);
-        setEnergies(data);
+        const [energyData, articleData] = await Promise.all([
+          getEnergiesByUser(userId),
+          getArticlesByUser(userId),
+        ]);
+        setEnergies(energyData);
+        setArticles(articleData);
         // Derive user info from the first energy's populated user field
-        if (data.length > 0) setProfileUser(data[0].user);
+        if (energyData.length > 0) setProfileUser(energyData[0].user);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -40,6 +47,7 @@ const Profile = () => {
   // Split energies by type
   const giving    = energies.filter((e) => e.type === 'give');
   const receiving = energies.filter((e) => e.type === 'receive');
+  const totalItems = energies.length + articles.length;
 
   const displayName = profileUser?.name || (isOwnProfile ? currentUser?.name : 'User');
 
@@ -75,7 +83,7 @@ const Profile = () => {
       {loading && <p className="state-msg profile__state">Loading profile…</p>}
       {error   && <p className="state-msg state-msg--error profile__state">{error}</p>}
 
-      {!loading && !error && energies.length === 0 && (
+      {!loading && !error && totalItems === 0 && (
         <div className="empty-state profile__empty">
           <p className="empty-state__icon">✨</p>
           <h2>No energies yet</h2>
@@ -85,29 +93,50 @@ const Profile = () => {
               : 'This user hasn\'t created any energies yet.'}
           </p>
           {isOwnProfile && (
-            <Link to="/create-energy" className="btn btn--primary">
-              Create Energy
+            <Link to="/dashboard" className="btn btn--primary">
+              Go to Dashboard
             </Link>
           )}
         </div>
       )}
 
       {/* ── Energy sections ────────────────────────────────────── */}
-      {!loading && !error && energies.length > 0 && (
+      {!loading && !error && totalItems > 0 && (
         <div className="profile__sections">
 
-          {/* Giving */}
-          {giving.length > 0 && (
+          {/* Giving — articles + give-type energies */}
+          {(articles.length > 0 || giving.length > 0) && (
             <section className="profile__section">
               <div className="profile__section-header profile__section-header--give">
                 <h2>❤️ Giving</h2>
-                <span>{giving.length} {giving.length === 1 ? 'energy' : 'energies'}</span>
+                <span>
+                  {articles.length + giving.length}{' '}
+                  {articles.length + giving.length === 1 ? 'item' : 'items'}
+                </span>
               </div>
-              <div className="profile__grid">
-                {giving.map((e) => (
-                  <EnergyCard key={e._id} energy={e} showUser={false} />
-                ))}
-              </div>
+
+              {/* Articles subsection */}
+              {articles.length > 0 && (
+                <div className="profile__grid profile__grid--articles">
+                  {articles.map((a) => (
+                    <ArticleCard
+                      key={a._id}
+                      article={a}
+                      showUser={false}
+                      showManage={isOwnProfile}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Give-type energies */}
+              {giving.length > 0 && (
+                <div className="profile__grid">
+                  {giving.map((e) => (
+                    <EnergyCard key={e._id} energy={e} showUser={false} />
+                  ))}
+                </div>
+              )}
             </section>
           )}
 
