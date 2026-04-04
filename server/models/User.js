@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 /**
- * User model — core identity for EnergeX.
- * Kept minimal at this stage; will gain profile fields
- * (avatar, bio, location, etc.) in a later phase.
+ * User model — Stray Dog Blog.
+ * Extended with profile fields: bio, location, profilePicture.
  */
 const userSchema = new mongoose.Schema(
   {
@@ -26,6 +25,11 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false, // never return password by default
     },
+
+    // ── Profile fields ──────────────────────────────────────
+    bio:            { type: String, trim: true, maxlength: 500 },
+    location:       { type: String, trim: true },
+    profilePicture: { type: String }, // Cloudinary URL
   },
   { timestamps: true }
 );

@@ -1,118 +1,117 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getAdventuresByUser } from '../services/adventureService';
-import AdventureCard from '../components/AdventureCard';
+import DashboardProfile      from './dashboard/DashboardProfile';
+import DashboardMyAdventures from './dashboard/DashboardMyAdventures';
+import DashboardFind         from './dashboard/DashboardFind';
+import DashboardSettings     from './dashboard/DashboardSettings';
 import './Dashboard.css';
 
+const NAV_ITEMS = [
+  { id: 'profile',    icon: '👤', label: 'My Profile' },
+  { id: 'adventures', icon: '🧭', label: 'My Adventures' },
+  { id: 'find',       icon: '🌍', label: 'Find Adventures' },
+  { id: 'settings',   icon: '⚙️',  label: 'Settings' },
+];
+
+const SECTION_MAP = {
+  profile:    DashboardProfile,
+  adventures: DashboardMyAdventures,
+  find:       DashboardFind,
+  settings:   DashboardSettings,
+};
+
 /**
- * Dashboard — main hub after login.
- * Shows the user's active and completed adventures.
+ * Dashboard — main hub for logged-in users.
+ *
+ * Two-column layout:
+ *   Left sidebar  (260px) — dark, logo + nav + user info
+ *   Right content (flex 1) — warm white, one section at a time
+ *
+ * On mobile: sidebar collapses; bottom navigation bar appears instead.
  */
 const Dashboard = () => {
-  const { user }     = useAuth();
-  const navigate     = useNavigate();
+  const { user, logout } = useAuth();
+  const navigate         = useNavigate();
 
-  const [adventures, setAdventures] = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState(null);
+  const [active, setActive] = useState('adventures');
 
-  useEffect(() => {
-    if (!user?._id) return;
-    getAdventuresByUser(user._id)
-      .then(setAdventures)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [user]);
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
-  const active    = adventures.filter((a) => a.status === 'active');
-  const completed = adventures.filter((a) => a.status === 'completed');
+  const ActiveSection = SECTION_MAP[active];
+
+  const initials = (user?.name || '?')[0].toUpperCase();
 
   return (
-    <div className="dashboard">
-      {/* ── Header ──────────────────────────────────────────────── */}
-      <div className="dashboard__header">
-        <div>
-          <h1 className="dashboard__greeting">
-            Welcome back, {user?.name?.split(' ')[0]} 👋
-          </h1>
-          <p className="dashboard__subtitle">
-            Track your adventures and document every moment.
-          </p>
-        </div>
+    <div className="db">
 
-        <div className="dashboard__actions">
-          <Link to="/create/adventure" className="btn btn--primary">
-            + New Adventure
+      {/* ══ Sidebar ══════════════════════════════════════════════ */}
+      <aside className="db__sidebar">
+        <div className="db__sidebar-inner">
+
+          {/* Logo */}
+          <Link to="/" className="db__logo">
+            Stray&nbsp;Dog
+            <span className="db__logo-accent">&nbsp;Blog</span>
           </Link>
-          <Link to="/explore" className="btn btn--ghost">
-            Explore
-          </Link>
-        </div>
-      </div>
 
-      {/* ── Content ─────────────────────────────────────────────── */}
-      <div className="dashboard__content">
-        {loading && <p className="state-msg">Loading your adventures…</p>}
-        {error   && <p className="state-msg state-msg--error">{error}</p>}
+          {/* Navigation */}
+          <nav className="db__nav" aria-label="Dashboard navigation">
+            {NAV_ITEMS.map(({ id, icon, label }) => (
+              <button
+                key={id}
+                className={`db__nav-item${active === id ? ' db__nav-item--active' : ''}`}
+                onClick={() => setActive(id)}
+              >
+                <span className="db__nav-icon" aria-hidden="true">{icon}</span>
+                <span className="db__nav-label">{label}</span>
+              </button>
+            ))}
+          </nav>
 
-        {/* Empty state */}
-        {!loading && !error && adventures.length === 0 && (
-          <div className="empty-state">
-            <p className="empty-state__icon">🌍</p>
-            <h2>No adventures yet</h2>
-            <p>
-              Start your first adventure log and document every moment of your journey —
-              from departure to destination.
-            </p>
-            <Link to="/create/adventure" className="btn btn--primary">
-              Start Your First Adventure
-            </Link>
+          {/* User + Logout */}
+          <div className="db__sidebar-footer">
+            <div className="db__user">
+              <div className="db__user-avatar">
+                {user?.profilePicture ? (
+                  <img src={user.profilePicture} alt={user.name} />
+                ) : (
+                  initials
+                )}
+              </div>
+              <div className="db__user-info">
+                <span className="db__user-name">{user?.name}</span>
+                <span className="db__user-email">{user?.email}</span>
+              </div>
+            </div>
+            <button className="db__logout-btn" onClick={handleLogout}>
+              Log Out
+            </button>
           </div>
-        )}
+        </div>
+      </aside>
 
-        {/* ── Active adventures ── */}
-        {!loading && !error && active.length > 0 && (
-          <section className="dashboard-section">
-            <div className="dashboard-section__header">
-              <h2 className="dashboard-section__title">
-                <span className="dashboard-section__live">●</span> Active
-              </h2>
-              <span className="dashboard-section__count">{active.length}</span>
-            </div>
-            <div className="dashboard-adventures-grid">
-              {active.map((adv) => (
-                <AdventureCard
-                  key={adv._id}
-                  adventure={adv}
-                  showUser={false}
-                  showEdit
-                />
-              ))}
-            </div>
-          </section>
-        )}
+      {/* ══ Main content ══════════════════════════════════════════ */}
+      <main className="db__main">
+        <ActiveSection />
+      </main>
 
-        {/* ── Completed adventures ── */}
-        {!loading && !error && completed.length > 0 && (
-          <section className="dashboard-section">
-            <div className="dashboard-section__header">
-              <h2 className="dashboard-section__title">Completed</h2>
-              <span className="dashboard-section__count">{completed.length}</span>
-            </div>
-            <div className="dashboard-adventures-grid">
-              {completed.map((adv) => (
-                <AdventureCard
-                  key={adv._id}
-                  adventure={adv}
-                  showUser={false}
-                  showEdit
-                />
-              ))}
-            </div>
-          </section>
-        )}
-      </div>
+      {/* ══ Mobile bottom navigation ══════════════════════════════ */}
+      <nav className="db__bottom-nav" aria-label="Mobile navigation">
+        {NAV_ITEMS.map(({ id, icon, label }) => (
+          <button
+            key={id}
+            className={`db__bottom-nav-item${active === id ? ' db__bottom-nav-item--active' : ''}`}
+            onClick={() => setActive(id)}
+          >
+            <span className="db__bottom-nav-icon" aria-hidden="true">{icon}</span>
+            <span className="db__bottom-nav-label">{label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   );
 };

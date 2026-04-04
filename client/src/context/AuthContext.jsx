@@ -70,13 +70,18 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   }, []);
 
+  /** Merge updated fields into the cached user object */
+  const updateUser = useCallback((updatedFields) => {
+    setUser((prev) => prev ? { ...prev, ...updatedFields } : updatedFields);
+  }, []);
+
   const clearError = useCallback(() => setError(null), []);
 
   const isAuthenticated = Boolean(token && user);
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, error, isAuthenticated, register, login, logout, clearError }}
+      value={{ user, token, loading, error, isAuthenticated, register, login, logout, updateUser, clearError }}
     >
       {children}
     </AuthContext.Provider>
