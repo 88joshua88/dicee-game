@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api', require('./routes/health'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/energies', require('./routes/energies'));
-app.use('/api/articles', require('./routes/articles'));
+app.use('/api/adventures', require('./routes/adventures'));
 app.use('/api', require('./routes/upload'));
 app.use('/api/email', require('./routes/email'));
 
@@ -35,6 +35,6 @@ app.use(errorHandler);
 // ── Start server ──────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`EnergeX API running on http://localhost:${PORT}`);
+  console.log(`Stray Dog Blog API running on http://localhost:${PORT}`);
 });
 

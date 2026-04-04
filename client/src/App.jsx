@@ -8,16 +8,17 @@ import HomePage     from './pages/HomePage';
 import LoginPage    from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
-// Protected pages — generic energy system
-import Dashboard    from './pages/Dashboard';
-import CreateEnergy from './pages/CreateEnergy';
+// Browse & profile
 import Marketplace  from './pages/Marketplace';
 import Profile      from './pages/Profile';
 
-// Article pages
-import CreateArticle from './pages/CreateArticle';
-import ArticleManage from './pages/ArticleManage';
-import ArticlePage   from './pages/ArticlePage';
+// Adventure pages
+import AdventurePage    from './pages/AdventurePage';
+import CreateAdventure  from './pages/CreateAdventure';
+import EditAdventure    from './pages/EditAdventure';
+
+// Protected: dashboard
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -32,22 +33,19 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
 
           {/* ── Public browsing ── */}
-          <Route path="/marketplace"     element={<Marketplace />} />
-          <Route path="/profile/:userId" element={<Profile />} />
-          <Route path="/article/:id"     element={<ArticlePage />} />
+          <Route path="/explore"             element={<Marketplace />} />
+          <Route path="/profile/:userId"     element={<Profile />} />
+          <Route path="/adventure/:id"       element={<AdventurePage />} />
 
           {/* ── Protected ── */}
           <Route path="/dashboard" element={
             <ProtectedRoute><Dashboard /></ProtectedRoute>
           } />
-          <Route path="/create-energy" element={
-            <ProtectedRoute><CreateEnergy /></ProtectedRoute>
+          <Route path="/create/adventure" element={
+            <ProtectedRoute><CreateAdventure /></ProtectedRoute>
           } />
-          <Route path="/create/article" element={
-            <ProtectedRoute><CreateArticle /></ProtectedRoute>
-          } />
-          <Route path="/article/manage/:id" element={
-            <ProtectedRoute><ArticleManage /></ProtectedRoute>
+          <Route path="/adventure/edit/:id" element={
+            <ProtectedRoute><EditAdventure /></ProtectedRoute>
           } />
         </Routes>
       </BrowserRouter>

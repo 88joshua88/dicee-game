@@ -1,0 +1,155 @@
+/* ===========================
+   Adventure Card
+   =========================== */
+
+.adv-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.adv-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* Image */
+.adv-card__image-link { display: block; }
+
+.adv-card__image {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--color-border);
+}
+
+.adv-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.adv-card:hover .adv-card__image img {
+  transform: scale(1.04);
+}
+
+/* Badges (overlay on image) */
+.adv-card__badges {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  right: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.adv-card__status {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.adv-card__status--active {
+  background: rgba(232, 134, 58, 0.88);
+  color: #fff;
+}
+
+.adv-card__status--completed {
+  background: rgba(52, 168, 83, 0.88);
+  color: #fff;
+}
+
+.adv-card__category {
+  margin-left: auto;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  color: var(--color-text-primary);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Body */
+.adv-card__body {
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.adv-card__title-link { display: block; }
+
+.adv-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.35;
+  margin-bottom: 0.3rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.15s ease;
+}
+
+.adv-card__title-link:hover .adv-card__title {
+  color: var(--color-accent);
+}
+
+.adv-card__route {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.1rem;
+}
+
+.adv-card__arrow { color: var(--color-accent); }
+
+/* Meta row */
+.adv-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  font-size: 0.73rem;
+  color: var(--color-text-muted);
+}
+
+.adv-card__author {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.adv-card__author:hover { text-decoration: underline; }
+
+.adv-card__moments::before { content: '·'; margin-right: 0.4rem; }
+
+.adv-card__date::before { content: '·'; margin-right: 0.4rem; }
+
+/* Edit link */
+.adv-card__edit-link {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.02em;
+  transition: color 0.15s ease;
+}
+
+.adv-card__edit-link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}

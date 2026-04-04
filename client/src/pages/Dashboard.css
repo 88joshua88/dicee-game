@@ -146,15 +146,26 @@
   padding: 0.15rem 0.55rem;
 }
 
-.dashboard-articles-grid {
+.dashboard-adventures-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.1rem;
 }
 
+.dashboard-section__live {
+  color: var(--color-accent);
+  font-size: 0.7em;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
 @media (max-width: 600px) {
-  .dashboard__header    { flex-direction: column; }
-  .dashboard__actions   { width: 100%; }
-  .btn                  { width: 100%; justify-content: center; }
-  .dashboard-articles-grid { grid-template-columns: 1fr; }
+  .dashboard__header      { flex-direction: column; }
+  .dashboard__actions     { width: 100%; }
+  .btn                    { width: 100%; justify-content: center; }
+  .dashboard-adventures-grid { grid-template-columns: 1fr; }
 }

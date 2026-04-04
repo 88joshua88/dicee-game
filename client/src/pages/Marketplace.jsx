@@ -1,75 +1,56 @@
 import { useEffect, useState } from 'react';
-import { getAllEnergies } from '../services/energyService';
-import { getAllArticles } from '../services/articleService';
-import EnergyCard from '../components/EnergyCard';
-import ArticleCard from '../components/ArticleCard';
+import { Link } from 'react-router-dom';
+import { getAllAdventures } from '../services/adventureService';
+import AdventureCard, { CATEGORY_ICONS } from '../components/AdventureCard';
 import './Marketplace.css';
 
+const CATEGORIES = ['Motorbike', 'Bicycle', 'Backpacking', 'Car', 'By Foot'];
+const STATUS_FILTERS = [
+  { value: 'all',       label: 'All' },
+  { value: 'active',    label: '● Live' },
+  { value: 'completed', label: '✓ Completed' },
+];
+
 /**
- * Marketplace — browse all energies and articles from all users.
- * Articles and generic energies are shown in separate labelled sections.
- * Both support keyword search and type filtering.
+ * Marketplace (Explore) — /explore
+ * Browse all adventures from all users.
+ * Filterable by category, status, and keyword search.
  */
 const Marketplace = () => {
-  const [energies, setEnergies] = useState([]);
-  const [articles, setArticles] = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [error,    setError]    = useState(null);
+  const [adventures,  setAdventures]  = useState([]);
+  const [loading,     setLoading]     = useState(true);
+  const [error,       setError]       = useState(null);
 
-  // Shared filters
-  const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter,  setTypeFilter]  = useState('all'); // 'all' | 'give' | 'receive'
+  const [search,      setSearch]      = useState('');
+  const [catFilter,   setCatFilter]   = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const [energyData, articleData] = await Promise.all([
-          getAllEnergies(),
-          getAllArticles(),
-        ]);
-        setEnergies(energyData);
-        setArticles(articleData);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAll();
+    getAllAdventures()
+      .then(setAdventures)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
-  // Filter energies
-  const filteredEnergies = energies.filter((e) => {
-    const matchesType = typeFilter === 'all' || e.type === typeFilter;
-    const q = searchQuery.toLowerCase();
+  const filtered = adventures.filter((adv) => {
+    const matchesCat    = catFilter === 'all' || adv.category === catFilter;
+    const matchesStatus = statusFilter === 'all' || adv.status === statusFilter;
+    const q = search.toLowerCase();
     const matchesSearch = !q ||
-      e.title?.toLowerCase().includes(q) ||
-      e.description?.toLowerCase().includes(q) ||
-      e.category?.toLowerCase().includes(q) ||
-      e.user?.name?.toLowerCase().includes(q);
-    return matchesType && matchesSearch;
+      adv.title?.toLowerCase().includes(q) ||
+      adv.startLocation?.toLowerCase().includes(q) ||
+      adv.endLocation?.toLowerCase().includes(q) ||
+      adv.category?.toLowerCase().includes(q) ||
+      adv.author?.name?.toLowerCase().includes(q);
+    return matchesCat && matchesStatus && matchesSearch;
   });
-
-  // Filter articles (articles are always "give" type)
-  const filteredArticles = (typeFilter === 'receive') ? [] : articles.filter((a) => {
-    const q = searchQuery.toLowerCase();
-    return !q ||
-      a.title?.toLowerCase().includes(q) ||
-      a.description?.toLowerCase().includes(q) ||
-      a.articleCategory?.toLowerCase().includes(q) ||
-      a.author?.name?.toLowerCase().includes(q);
-  });
-
-  const totalResults = filteredEnergies.length + filteredArticles.length;
 
   return (
     <div className="marketplace">
-      {/* ── Header ─────────────────────────────────────────────── */}
+      {/* ── Hero header ─────────────────────────────────────────── */}
       <div className="marketplace__header">
-        <div>
-          <h1>Marketplace</h1>
-          <p>Discover what people are giving and receiving across the globe.</p>
-        </div>
+        <h1>Explore Adventures</h1>
+        <p>Follow travellers around the world — moment by moment.</p>
       </div>
 
       {/* ── Filters ────────────────────────────────────────────── */}
@@ -77,76 +58,76 @@ const Marketplace = () => {
         <input
           className="marketplace__search"
           type="text"
-          placeholder="Search energies, articles, categories, or people…"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search by title, location, category, or traveller…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
 
-        <div className="marketplace__type-tabs">
-          {['all', 'give', 'receive'].map((t) => (
+        <div className="marketplace__filter-row">
+          {/* Status tabs */}
+          <div className="marketplace__type-tabs">
+            {STATUS_FILTERS.map(({ value, label }) => (
+              <button
+                key={value}
+                className={`type-tab${statusFilter === value ? ' active' : ''}`}
+                onClick={() => setStatusFilter(value)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Category pills */}
+          <div className="marketplace__cat-pills">
             <button
-              key={t}
-              className={`type-tab${typeFilter === t ? ' active' : ''}`}
-              onClick={() => setTypeFilter(t)}
+              className={`cat-pill${catFilter === 'all' ? ' active' : ''}`}
+              onClick={() => setCatFilter('all')}
             >
-              {t === 'all' ? 'All' : t === 'give' ? '❤️ Giving' : '↩️ Receiving'}
+              All Types
             </button>
-          ))}
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                className={`cat-pill${catFilter === cat ? ' active' : ''}`}
+                onClick={() => setCatFilter(cat)}
+              >
+                {CATEGORY_ICONS[cat]} {cat}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* ── States ─────────────────────────────────────────────── */}
-      {loading && <p className="state-msg">Loading marketplace…</p>}
+      {loading && <p className="state-msg">Loading adventures…</p>}
       {error   && <p className="state-msg state-msg--error">{error}</p>}
 
-      {!loading && !error && totalResults === 0 && (
+      {!loading && !error && filtered.length === 0 && (
         <div className="empty-state">
-          <p className="empty-state__icon">🔍</p>
-          <h2>No results found</h2>
+          <p className="empty-state__icon">🗺</p>
+          <h2>No adventures found</h2>
           <p>
-            {searchQuery || typeFilter !== 'all'
+            {search || catFilter !== 'all' || statusFilter !== 'all'
               ? 'Try adjusting your search or filters.'
-              : 'Be the first to create an energy and get the exchange started.'}
+              : 'Be the first to document a journey.'}
           </p>
+          <Link to="/create/adventure" className="btn btn--primary">
+            Start an Adventure
+          </Link>
         </div>
       )}
 
-      {!loading && !error && totalResults > 0 && (
-        <p className="marketplace__count">
-          {totalResults} result{totalResults !== 1 ? 's' : ''}
-        </p>
-      )}
-
-      {/* ── Articles section ── */}
-      {!loading && !error && filteredArticles.length > 0 && (
-        <section className="marketplace__section">
-          <div className="marketplace__section-header">
-            <h2>Articles</h2>
-            <span>{filteredArticles.length}</span>
-          </div>
-          <div className="marketplace__articles-grid">
-            {filteredArticles.map((article) => (
-              <ArticleCard key={article._id} article={article} showUser />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Energies section ── */}
-      {!loading && !error && filteredEnergies.length > 0 && (
-        <section className="marketplace__section">
-          {filteredArticles.length > 0 && (
-            <div className="marketplace__section-header">
-              <h2>Energies</h2>
-              <span>{filteredEnergies.length}</span>
-            </div>
-          )}
+      {!loading && !error && filtered.length > 0 && (
+        <>
+          <p className="marketplace__count">
+            {filtered.length} adventure{filtered.length !== 1 ? 's' : ''}
+          </p>
           <div className="marketplace__grid">
-            {filteredEnergies.map((energy) => (
-              <EnergyCard key={energy._id} energy={energy} showUser />
+            {filtered.map((adv) => (
+              <AdventureCard key={adv._id} adventure={adv} showUser />
             ))}
           </div>
-        </section>
+        </>
       )}
     </div>
   );

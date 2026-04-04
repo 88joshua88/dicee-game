@@ -4,8 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
 /**
- * Navbar — top navigation for EnergeX.
- * Shows different links depending on whether the user is logged in.
+ * Navbar — top navigation for Stray Dog Blog.
  * Collapses to a hamburger menu on mobile.
  */
 const Navbar = () => {
@@ -27,14 +26,14 @@ const Navbar = () => {
       <div className="navbar__inner">
         {/* Brand */}
         <Link to="/" className="navbar__brand" onClick={closeMenu}>
-          Energe<span className="navbar__brand-dot">X</span>
+          Stray Dog<span className="navbar__brand-dot"> Blog</span>
         </Link>
 
         {/* Desktop links */}
         <ul className="navbar__links">
           <li>
-            <NavLink to="/marketplace" className={({ isActive }) => isActive ? 'active' : ''}>
-              Marketplace
+            <NavLink to="/explore" className={({ isActive }) => isActive ? 'active' : ''}>
+              Explore
             </NavLink>
           </li>
 
@@ -89,7 +88,7 @@ const Navbar = () => {
       {/* Mobile dropdown */}
       <div className={`navbar__mobile${menuOpen ? ' open' : ''}`}>
         <ul>
-          <li><NavLink to="/marketplace" onClick={closeMenu}>Marketplace</NavLink></li>
+          <li><NavLink to="/explore" onClick={closeMenu}>Explore</NavLink></li>
 
           {isAuthenticated ? (
             <>

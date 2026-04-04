@@ -1,51 +1,32 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getEnergiesByUser, groupByCategory } from '../services/energyService';
-import { getArticlesByUser } from '../services/articleService';
-import CategorySection from '../components/CategorySection';
-import ArticleCard from '../components/ArticleCard';
-import CategoryModal from '../components/CategoryModal';
+import { getAdventuresByUser } from '../services/adventureService';
+import AdventureCard from '../components/AdventureCard';
 import './Dashboard.css';
 
 /**
  * Dashboard — main hub after login.
- *
- * - "Create Energy" button opens CategoryModal (structured type selection)
- * - Shows user's Articles section
- * - Shows user's generic Energies grouped by category
+ * Shows the user's active and completed adventures.
  */
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user }     = useAuth();
+  const navigate     = useNavigate();
 
-  const [energies, setEnergies] = useState([]);
-  const [articles, setArticles] = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [error,    setError]    = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [adventures, setAdventures] = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [error,      setError]      = useState(null);
 
   useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const [energyData, articleData] = await Promise.all([
-          getEnergiesByUser(user._id),
-          getArticlesByUser(user._id),
-        ]);
-        setEnergies(energyData);
-        setArticles(articleData);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user?._id) fetchAll();
+    if (!user?._id) return;
+    getAdventuresByUser(user._id)
+      .then(setAdventures)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, [user]);
 
-  const grouped    = groupByCategory(energies);
-  const categories = Object.keys(grouped);
-  const isEmpty    = energies.length === 0 && articles.length === 0;
+  const active    = adventures.filter((a) => a.status === 'active');
+  const completed = adventures.filter((a) => a.status === 'completed');
 
   return (
     <div className="dashboard">
@@ -56,73 +37,82 @@ const Dashboard = () => {
             Welcome back, {user?.name?.split(' ')[0]} 👋
           </h1>
           <p className="dashboard__subtitle">
-            Manage your energies and connect with the marketplace.
+            Track your adventures and document every moment.
           </p>
         </div>
 
         <div className="dashboard__actions">
-          <button className="btn btn--primary" onClick={() => setModalOpen(true)}>
-            + Create Energy
-          </button>
-          <Link to="/marketplace" className="btn btn--ghost">
-            Explore Marketplace
+          <Link to="/create/adventure" className="btn btn--primary">
+            + New Adventure
+          </Link>
+          <Link to="/explore" className="btn btn--ghost">
+            Explore
           </Link>
         </div>
       </div>
 
       {/* ── Content ─────────────────────────────────────────────── */}
       <div className="dashboard__content">
-        {loading && <p className="state-msg">Loading your energies…</p>}
+        {loading && <p className="state-msg">Loading your adventures…</p>}
         {error   && <p className="state-msg state-msg--error">{error}</p>}
 
         {/* Empty state */}
-        {!loading && !error && isEmpty && (
+        {!loading && !error && adventures.length === 0 && (
           <div className="empty-state">
-            <p className="empty-state__icon">⚡</p>
-            <h2>You haven't created any energy yet</h2>
+            <p className="empty-state__icon">🌍</p>
+            <h2>No adventures yet</h2>
             <p>
-              Start by clicking "Create Energy" to select a type and publish
-              your first offering to the world.
+              Start your first adventure log and document every moment of your journey —
+              from departure to destination.
             </p>
-            <button className="btn btn--primary" onClick={() => setModalOpen(true)}>
-              Create Your First Energy
-            </button>
+            <Link to="/create/adventure" className="btn btn--primary">
+              Start Your First Adventure
+            </Link>
           </div>
         )}
 
-        {/* ── Articles section ── */}
-        {!loading && !error && articles.length > 0 && (
+        {/* ── Active adventures ── */}
+        {!loading && !error && active.length > 0 && (
           <section className="dashboard-section">
             <div className="dashboard-section__header">
-              <h2 className="dashboard-section__title">Your Articles</h2>
-              <span className="dashboard-section__count">{articles.length}</span>
+              <h2 className="dashboard-section__title">
+                <span className="dashboard-section__live">●</span> Active
+              </h2>
+              <span className="dashboard-section__count">{active.length}</span>
             </div>
-            <div className="dashboard-articles-grid">
-              {articles.map((article) => (
-                <ArticleCard
-                  key={article._id}
-                  article={article}
+            <div className="dashboard-adventures-grid">
+              {active.map((adv) => (
+                <AdventureCard
+                  key={adv._id}
+                  adventure={adv}
                   showUser={false}
-                  showManage
+                  showEdit
                 />
               ))}
             </div>
           </section>
         )}
 
-        {/* ── Generic energies grouped by category ── */}
-        {!loading && !error && categories.map((cat) => (
-          <CategorySection
-            key={cat}
-            category={cat}
-            energies={grouped[cat]}
-            showUser={false}
-          />
-        ))}
+        {/* ── Completed adventures ── */}
+        {!loading && !error && completed.length > 0 && (
+          <section className="dashboard-section">
+            <div className="dashboard-section__header">
+              <h2 className="dashboard-section__title">Completed</h2>
+              <span className="dashboard-section__count">{completed.length}</span>
+            </div>
+            <div className="dashboard-adventures-grid">
+              {completed.map((adv) => (
+                <AdventureCard
+                  key={adv._id}
+                  adventure={adv}
+                  showUser={false}
+                  showEdit
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
-
-      {/* ── Category selection modal ── */}
-      <CategoryModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 };

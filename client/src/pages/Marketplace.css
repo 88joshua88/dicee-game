@@ -1,5 +1,5 @@
 /* ===========================
-   Marketplace
+   Explore / Marketplace
    =========================== */
 
 .marketplace {
@@ -9,40 +9,38 @@
 }
 
 .marketplace__header {
-  margin-bottom: 1.75rem;
+  margin-bottom: 2rem;
 }
 
 .marketplace__header h1 {
   font-family: var(--font-heading);
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
   color: var(--color-text-primary);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.3rem;
 }
 
 .marketplace__header p {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--color-text-secondary);
 }
 
-/* Filters */
+/* ── Filters ── */
 .marketplace__filters {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.75rem;
 }
 
 .marketplace__search {
-  flex: 1;
-  min-width: 220px;
+  width: 100%;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-text-primary);
   font-family: var(--font-body);
-  font-size: 0.9rem;
-  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  padding: 0.65rem 1rem;
   transition: border-color 0.2s ease;
 }
 
@@ -55,10 +53,18 @@
   color: var(--color-text-muted);
 }
 
-/* Type tabs */
+.marketplace__filter-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Status tabs */
 .marketplace__type-tabs {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  flex-shrink: 0;
 }
 
 .type-tab {
@@ -68,10 +74,11 @@
   color: var(--color-text-secondary);
   cursor: pointer;
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.4rem 1rem;
+  padding: 0.35rem 0.9rem;
   transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
 }
 
 .type-tab:hover { color: var(--color-text-primary); }
@@ -82,61 +89,50 @@
   color: #fff;
 }
 
-/* Count line */
+/* Category pills */
+.marketplace__cat-pills {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.cat-pill {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 0.28rem 0.75rem;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.cat-pill:hover { color: var(--color-text-primary); border-color: var(--color-accent); }
+
+.cat-pill.active {
+  border-color: var(--color-accent);
+  background: rgba(232, 134, 58, 0.12);
+  color: var(--color-accent);
+}
+
+/* Count */
 .marketplace__count {
   font-size: 0.8rem;
   color: var(--color-text-muted);
   margin-bottom: 1.25rem;
 }
 
-/* Section headers (Articles / Energies) */
-.marketplace__section {
-  margin-bottom: 2.5rem;
-}
-
-.marketplace__section-header {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin-bottom: 1rem;
-}
-
-.marketplace__section-header h2 {
-  font-family: var(--font-heading);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.marketplace__section-header span {
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-muted);
-  border-radius: 999px;
-  padding: 0.15rem 0.55rem;
-}
-
-/* Articles grid */
-.marketplace__articles-grid {
+/* Grid */
+.marketplace__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.1rem;
 }
 
-/* Results grid */
-.marketplace__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.1rem;
-}
-
-/* Reuse .state-msg and .empty-state from Dashboard.css */
-/* (both are defined globally enough via shared page styles) */
-
-@media (max-width: 560px) {
-  .marketplace__filters { flex-direction: column; align-items: stretch; }
-  .marketplace__search  { min-width: unset; }
-  .marketplace__grid    { grid-template-columns: 1fr; }
+@media (max-width: 600px) {
+  .marketplace__filter-row { flex-direction: column; align-items: stretch; }
+  .marketplace__grid        { grid-template-columns: 1fr; }
 }
