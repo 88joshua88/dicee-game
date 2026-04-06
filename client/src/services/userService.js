@@ -9,11 +9,10 @@ export const uploadAvatar = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
   const token = localStorage.getItem('energex_token');
-  const { data } = await axios.post(
-    `${import.meta.env.VITE_API_URL}/api/upload`,
-    formData,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  const uploadUrl = `${import.meta.env.VITE_API_URL || ''}/api/upload`;
+  const { data } = await axios.post(uploadUrl, formData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   return data; // { url, public_id }
 };
 

@@ -12,7 +12,9 @@ import axios from 'axios';
  *   const { data } = await api.get('/health');
  */
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  // In production VITE_API_URL is not set → baseURL becomes '/api' (relative to same host).
+  // In development set VITE_API_URL=http://localhost:5000 in client/.env.
+  baseURL: `${import.meta.env.VITE_API_URL || ''}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
